@@ -1,16 +1,22 @@
 # aplikasi_running
 
-A new Flutter project.
+### Features
+- [ ] Input user data to local database
+- [ ] Screen Dashboard running app
+- [ ] Screen Result running app
 
-## Getting Started
+### Clone Project
+```
+git clone https://github.com/ASNProject/aplikasi_running.git
+```
 
-This project is a starting point for a Flutter application.
+### Run Project
+```
+flutter pub get
+```
+```
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Screenshot<br/>
+![WhatsApp Image 2024-02-18 at 2 28 58 PM](https://github.com/ASNProject/aplikasi_running/assets/49858542/940c692f-97ee-43d0-ba68-9120f18a689e)
