@@ -147,7 +147,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                     ),
                   ),
                   onPressed: () {
-                    GoRouter.of(context).pushNamed(
+                    GoRouter.of(context).pushReplacementNamed(
                       AppRouteConstants.resultScreen,
                       params: {
                         'name': widget.name,
