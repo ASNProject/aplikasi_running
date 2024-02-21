@@ -4,6 +4,9 @@
 - [ ] Input user data to local database
 - [ ] Screen Dashboard running app
 - [ ] Screen Result running app
+- [x] Connect Firebase
+- [x] Get data from Firebase Realtime
+- [x] Show data in Chart and Text BPM
 
 ### Clone Project
 ```
