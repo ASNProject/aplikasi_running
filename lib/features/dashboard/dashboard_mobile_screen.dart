@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:aplikasi_running/cores/networks/firebase_services.dart';
 import 'package:aplikasi_running/cores/routers/routes.dart';
 import 'package:aplikasi_running/models/heart_rate_data.dart';
 import 'package:flutter/material.dart';
@@ -32,13 +33,22 @@ class DashboardMobileScreen extends StatefulWidget {
 }
 
 class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
-  final List<HeartRateData> heartRate = [
-    HeartRateData(1, 123),
-    HeartRateData(2, 145),
-    HeartRateData(3, 124),
-    HeartRateData(4, 132),
-    HeartRateData(5, 165),
-  ];
+  // final List<HeartRateData> heartRate = [
+  //   HeartRateData(1, 123),
+  //   HeartRateData(2, 145),
+  //   HeartRateData(3, 124),
+  //   HeartRateData(4, 132),
+  //   HeartRateData(5, 165),
+  // ];
+  late Stream<List<HeartRateData>> heartRateStream;
+
+  @override
+  void initState() {
+    super.initState();
+    final firebaseService = FirebaseService();
+    heartRateStream = firebaseService.getHeartRateData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,29 +90,39 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                       ),
                     ),
                     Expanded(
-                      child: SfCartesianChart(
-                        primaryXAxis: const NumericAxis(
-                          title: AxisTitle(
-                            text: 'Time',
-                            textStyle: TextStyle(fontSize: 8),
-                          ),
-                        ),
-                        primaryYAxis: const NumericAxis(
-                          title: AxisTitle(
-                            text: 'BPM',
-                            textStyle: TextStyle(fontSize: 8),
-                          ),
-                        ),
-                        series: <CartesianSeries>[
-                          LineSeries<HeartRateData, int>(
-                            dataSource: heartRate,
-                            xValueMapper: (HeartRateData heartRate, _) =>
-                                heartRate.time,
-                            yValueMapper: (HeartRateData heartRate, _) =>
-                                heartRate.bpm,
-                            color: Colors.amber,
-                          )
-                        ],
+                      child: StreamBuilder<List<HeartRateData>>(
+                        stream: heartRateStream,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return SfCartesianChart(
+                              primaryXAxis: const NumericAxis(
+                                title: AxisTitle(
+                                  text: 'Time',
+                                  textStyle: TextStyle(fontSize: 8),
+                                ),
+                              ),
+                              primaryYAxis: const NumericAxis(
+                                title: AxisTitle(
+                                  text: 'BPM',
+                                  textStyle: TextStyle(fontSize: 8),
+                                ),
+                              ),
+                              series: <CartesianSeries>[
+                                LineSeries<HeartRateData, int>(
+                                  dataSource: snapshot.data,
+                                  xValueMapper: (HeartRateData heartRate, _) =>
+                                      heartRate.time,
+                                  yValueMapper: (HeartRateData heartRate, _) =>
+                                      heartRate.bpm,
+                                  color: Colors.amber,
+                                )
+                              ],
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          }
+                          return const CircularProgressIndicator();
+                        },
                       ),
                     )
                   ],
