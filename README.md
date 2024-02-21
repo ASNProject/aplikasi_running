@@ -9,6 +9,7 @@
 - [x] Show data in Chart and Text BPM
 - [ ] Calculation lever running
 - [ ] Update data for Result screen
+- [ ] Create timer
 
 ### Clone Project
 ```
