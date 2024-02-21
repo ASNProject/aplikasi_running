@@ -33,13 +33,6 @@ class DashboardMobileScreen extends StatefulWidget {
 }
 
 class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
-  // final List<HeartRateData> heartRate = [
-  //   HeartRateData(1, 123),
-  //   HeartRateData(2, 145),
-  //   HeartRateData(3, 124),
-  //   HeartRateData(4, 132),
-  //   HeartRateData(5, 165),
-  // ];
   late Stream<List<HeartRateData>> heartRateStream;
 
   @override
@@ -55,46 +48,49 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 40.0),
-                child: Center(
-                  child: Text(
-                    'Mulai Lari',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              const Text(
-                'Time: 00:00:00',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              const Text(
-                'Heart Rate',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 200,
-                child: Row(
+          child: StreamBuilder<List<HeartRateData>>(
+            stream: heartRateStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Column(
                   children: [
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: SizedBox(
-                        height: 40,
-                        width: 40,
-                        child: Image.asset('assets/images/hearrate.png'),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 40.0),
+                      child: Center(
+                        child: Text(
+                          'Mulai Lari',
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
-                    Expanded(
-                      child: StreamBuilder<List<HeartRateData>>(
-                        stream: heartRateStream,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return SfCartesianChart(
+                    const Text(
+                      'Time: 00:00:00',
+                      style:
+                          TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    const Text(
+                      'Heart Rate',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 200,
+                      child: Row(
+                        children: [
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: SizedBox(
+                              height: 40,
+                              width: 40,
+                              child: Image.asset('assets/images/hearrate.png'),
+                            ),
+                          ),
+                          Expanded(
+                            child: SfCartesianChart(
                               primaryXAxis: const NumericAxis(
                                 title: AxisTitle(
                                   text: 'Time',
@@ -117,75 +113,81 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                                   color: Colors.amber,
                                 )
                               ],
-                            );
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          }
-                          return const CircularProgressIndicator();
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    const Text(
+                      'BPM',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      snapshot.data!.last.bpm.toString(),
+                      style: const TextStyle(
+                          fontSize: 60, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    const Text(
+                      'Your level run now',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const Text(
+                      'Level 1',
+                      style:
+                          TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    SizedBox(
+                      height: 50,
+                      width: 200,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              const MaterialStatePropertyAll<Color>(
+                                  Colors.blue),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          GoRouter.of(context).pushReplacementNamed(
+                            AppRouteConstants.resultScreen,
+                            params: {
+                              'name': widget.name,
+                              'age': widget.age,
+                            },
+                          );
                         },
+                        child: const Text(
+                          'END',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                    )
+                    ),
                   ],
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              const Text(
-                'BPM',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const Text(
-                '152',
-                style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 32,
-              ),
-              const Text(
-                'Your level run now',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const Text(
-                'Level 1',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 32,
-              ),
-              SizedBox(
-                height: 50,
-                width: 200,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        const MaterialStatePropertyAll<Color>(Colors.blue),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                    ),
-                  ),
-                  onPressed: () {
-                    GoRouter.of(context).pushReplacementNamed(
-                      AppRouteConstants.resultScreen,
-                      params: {
-                        'name': widget.name,
-                        'age': widget.age,
-                      },
-                    );
-                  },
-                  child: const Text(
-                    'END',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+                );
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+              return const CircularProgressIndicator();
+            },
           ),
         ),
       ),
