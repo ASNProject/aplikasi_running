@@ -1,9 +1,9 @@
 # aplikasi_running
 
 ### Features
-- [ ] Input user data to local database
-- [ ] Screen Dashboard running app
-- [ ] Screen Result running app
+- [x] Input user data to local database
+- [x] Screen Dashboard running app
+- [x] Screen Result running app
 - [x] Connect Firebase
 - [x] Get data from Firebase Realtime
 - [x] Show data in Chart and Text BPM
