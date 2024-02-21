@@ -7,6 +7,8 @@
 - [x] Connect Firebase
 - [x] Get data from Firebase Realtime
 - [x] Show data in Chart and Text BPM
+- [ ] Calculation lever running
+- [ ] Update data for Result screen
 
 ### Clone Project
 ```
