@@ -42,9 +42,15 @@ class AppRouterConfiguration {
             name: AppRouteConstants.resultScreen,
             path: AppRouteConstants.resultScreen,
             builder: (context, state) {
+              String average = state.queryParams['averageBPM'] as String;
+              String maxBPM = state.queryParams['maxBPM'] as String;
+              String getTime = state.queryParams['getTime'] as String;
               return ResultMobileScreen(
                 name: state.params['name'] as String,
                 age: state.params['age'] as String,
+                averageBPM: average,
+                maxBPM: maxBPM,
+                getTime: getTime,
               );
             },
           ),

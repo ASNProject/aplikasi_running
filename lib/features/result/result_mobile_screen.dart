@@ -17,10 +17,17 @@ import 'package:flutter/material.dart';
 class ResultMobileScreen extends StatefulWidget {
   final String name;
   final String age;
+  final String averageBPM;
+  final String maxBPM;
+  final String getTime;
+
   const ResultMobileScreen({
     super.key,
     required this.name,
     required this.age,
+    required this.averageBPM,
+    required this.maxBPM,
+    required this.getTime,
   });
 
   @override
@@ -104,9 +111,10 @@ class _ResultMobileScreenState extends State<ResultMobileScreen> {
                   'Waktu',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                const Text(
-                  '30:15:12',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                Text(
+                  widget.getTime,
+                  style: const TextStyle(
+                      fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 32,
@@ -115,9 +123,10 @@ class _ResultMobileScreenState extends State<ResultMobileScreen> {
                   'Detak max',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                const Text(
-                  '187 BPM',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                Text(
+                  '${widget.maxBPM} BPM',
+                  style: const TextStyle(
+                      fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 32,
@@ -126,9 +135,10 @@ class _ResultMobileScreenState extends State<ResultMobileScreen> {
                   'Detak rata-rata',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                const Text(
-                  '163 BPM',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                Text(
+                  '${widget.averageBPM} BPM',
+                  style: const TextStyle(
+                      fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 100,
