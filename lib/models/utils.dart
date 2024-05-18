@@ -20,7 +20,7 @@ int buildDecisionThreeMethods(
     double percentage = (hr / max) * 100;
 
     if (percentage < 50) {
-      return 0; // Heart rate below 50% of MaxHR
+      return 0;
     } else {
       return decisionTree(percentage);
     }
