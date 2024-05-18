@@ -39,6 +39,8 @@ dependencies:
   syncfusion_flutter_charts: ^24.2.7
   firebase_core: ^2.25.4
   firebase_database: ^10.4.6
+  ml_dataframe: ^1.6.0
+  ml_algo: ^16.17.10
 
 dev_dependencies:
   flutter_test:

@@ -19,7 +19,10 @@ import 'package:aplikasi_running/cores/routers/app_route_constants.dart';
 import 'package:aplikasi_running/models/heart_rate_data.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ml_algo/ml_algo.dart';
+import 'package:ml_dataframe/ml_dataframe.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:aplikasi_running/models/utils.dart';
 
 class DashboardMobileScreen extends StatefulWidget {
   final String name;
@@ -44,6 +47,24 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
   bool _isTimerRunning = true;
   String geTime = '';
 
+  final List<double> percentages = [
+    59.0, 57.0, 56.0, 54.0, 52.0, 50.0,
+    69.0, 67.0, 66.0, 64.0, 62.0, 60.0,
+    79.0, 77.0, 76.0, 74.0, 72.0, 70.0,
+    89.0, 87.0, 86.0, 84.0, 82.0, 80.0,
+    99.0, 97.0, 96.0, 94.0, 92.0, 90.0,
+  ];
+
+  final List<int> levels = [
+    1, 1, 1, 1, 1, 1,
+    2, 2, 2, 2, 2, 2,
+    3, 3, 3, 3, 3, 3,
+    4, 4, 4, 4, 4, 4,
+    5, 5, 5, 5, 5, 5,
+  ];
+
+  DecisionTreeClassifier? classifier;
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +74,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
       const Duration(seconds: 1),
       _updateTimer,
     );
+    _trainModel();
   }
 
   @override
@@ -61,6 +83,36 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
     super.dispose();
   }
 
+  void _trainModel(){
+    final data = DataFrame.fromSeries([
+      Series('percentages', percentages),
+      Series('level', levels),
+    ]);
+    classifier = DecisionTreeClassifier(data, 'level');
+  }
+
+    int _buildDecisionThreeMethods(int maxHr, int hr) {
+    if (classifier == null) {
+      return 0;
+    }
+    double percentage = (hr /maxHr) * 100;
+
+    final input = DataFrame([
+      [percentage]
+    ], header: ['percentages']);
+
+    final prediction = classifier!.predict(input);
+
+    // Ensure prediction is not empty
+    if (prediction.rows.isEmpty || prediction.rows.first.isEmpty) {
+      return 0;
+    }
+
+    final predictedLevel = prediction.rows.first.first.toString();
+
+
+    return int.tryParse(predictedLevel) ?? 0;
+    }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -180,7 +232,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      'Level ${_buildDecisionTreeMethod(
+                      'Level ${buildDecisionThreeMethods(
                         bpmMax,
                         snapshot.data!.last.bpm,
                       )}',
@@ -235,7 +287,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                   ],
                 );
               } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
+                return Text('Error: ${_buildDecisionThreeMethods(0, 0)}');
               }
               return const CircularProgressIndicator();
             },
@@ -270,37 +322,5 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
     String secondsStr = remainingSeconds.toString().padLeft(2, '0');
 
     return '$hourStr:$minutesStr:$secondsStr';
-  }
-
-  int _buildDecisionTreeMethod(
-    int maxHr,
-    int hr,
-  ) {
-    int decisionTree(double percentage) {
-      if (percentage < 60) {
-        return 1; // Level 1
-      } else if (percentage < 70) {
-        return 2; // Level 2
-      } else if (percentage < 80) {
-        return 3; // Level 3
-      } else if (percentage < 90) {
-        return 4; // Level 4
-      } else {
-        return 5; // Level 5
-      }
-    }
-
-    int calculateLevel(int hr, int max) {
-      double percentage = (hr / max) * 100;
-
-      if (percentage < 50) {
-        return 0; // Heart rate below 50% of MaxHR
-      } else {
-        return decisionTree(percentage);
-      }
-    }
-
-    int level = calculateLevel(hr, maxHr);
-    return level;
   }
 }
