@@ -14,6 +14,6 @@
 
 class HeartRateData {
   final int time;
-  final int bpm;
+  final String bpm;
   HeartRateData(this.time, this.bpm);
 }

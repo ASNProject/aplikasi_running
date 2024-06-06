@@ -48,19 +48,69 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
   String geTime = '';
 
   final List<double> percentages = [
-    59.0, 57.0, 56.0, 54.0, 52.0, 50.0,
-    69.0, 67.0, 66.0, 64.0, 62.0, 60.0,
-    79.0, 77.0, 76.0, 74.0, 72.0, 70.0,
-    89.0, 87.0, 86.0, 84.0, 82.0, 80.0,
-    99.0, 97.0, 96.0, 94.0, 92.0, 90.0,
+    59.0,
+    57.0,
+    56.0,
+    54.0,
+    52.0,
+    50.0,
+    69.0,
+    67.0,
+    66.0,
+    64.0,
+    62.0,
+    60.0,
+    79.0,
+    77.0,
+    76.0,
+    74.0,
+    72.0,
+    70.0,
+    89.0,
+    87.0,
+    86.0,
+    84.0,
+    82.0,
+    80.0,
+    99.0,
+    97.0,
+    96.0,
+    94.0,
+    92.0,
+    90.0,
   ];
 
   final List<int> levels = [
-    1, 5, 1, 1, 1, 1,
-    2, 2, 2, 2, 2, 2,
-    3, 3, 3, 3, 3, 3,
-    4, 4, 4, 4, 4, 4,
-    5, 5, 5, 5, 5, 5,
+    1,
+    5,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
   ];
 
   DecisionTreeClassifier? classifier;
@@ -83,7 +133,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
     super.dispose();
   }
 
-  void _trainModel(){
+  void _trainModel() {
     final data = DataFrame.fromSeries([
       Series('percentages', percentages),
       Series('level', levels),
@@ -91,15 +141,17 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
     classifier = DecisionTreeClassifier(data, 'level');
   }
 
-    int _buildDecisionThreeMethods(int maxHr, int hr) {
+  int _buildDecisionThreeMethods(int maxHr, int hr) {
     if (classifier == null) {
       return 0;
     }
-    double percentage = (hr /maxHr) * 100;
+    double percentage = (hr / maxHr) * 100;
 
     final input = DataFrame([
       [percentage]
-    ], header: ['percentages']);
+    ], header: [
+      'percentages'
+    ]);
 
     final prediction = classifier!.predict(input);
 
@@ -110,9 +162,9 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
 
     final predictedLevel = prediction.rows.first.first.toString();
 
-
     return int.tryParse(predictedLevel) ?? 0;
-    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,15 +174,30 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
           child: StreamBuilder<List<HeartRateData>>(
             stream: heartRateStream,
             builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No data available'));
+              }
+
+              final heartRateData = snapshot.data!;
               int bpmMax = 220 - int.parse(widget.age);
-              if (snapshot.hasData) {
+              if (heartRateData.isNotEmpty) {
                 // Calculate average bpm
-                int totalBPM =
-                    snapshot.data!.fold(0, (prev, e) => prev + e.bpm);
+                int totalBPM = snapshot.data!
+                    .fold(0, (prev, e) => prev + int.parse(e.bpm));
                 double averageBPM = totalBPM / snapshot.data!.length;
                 // Calculate max bpm
-                int maxBPM = snapshot.data!
-                    .fold(0, (prev, e) => prev > e.bpm ? prev : e.bpm);
+                int maxBPM = snapshot.data!.fold(
+                    0,
+                    (prev, e) =>
+                        prev > int.parse(e.bpm) ? prev : int.parse(e.bpm));
                 return Column(
                   children: [
                     const Padding(
@@ -188,19 +255,20 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                                   xValueMapper: (HeartRateData heartRate, _) =>
                                       heartRate.time,
                                   yValueMapper: (HeartRateData heartRate, _) =>
-                                      heartRate.bpm,
+                                      int.parse(heartRate.bpm),
                                   color: Colors.amber,
                                 ),
                                 LineSeries<HeartRateData, int>(
                                   dataSource: List.generate(
                                       snapshot.data!.length,
                                       (index) => HeartRateData(
-                                          snapshot.data![index].time, bpmMax)),
+                                          snapshot.data![index].time,
+                                          bpmMax.toString())),
                                   // Data dengan nilai BPM konstan 100
                                   xValueMapper: (HeartRateData heartRate, _) =>
                                       heartRate.time,
                                   yValueMapper: (HeartRateData heartRate, _) =>
-                                      heartRate.bpm,
+                                      int.parse(heartRate.bpm),
                                   color: Colors
                                       .red, // Ganti warna sesuai kebutuhan
                                 ),
@@ -234,7 +302,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                     Text(
                       'Level ${buildDecisionThreeMethods(
                         bpmMax,
-                        snapshot.data!.last.bpm,
+                        int.parse(snapshot.data!.last.bpm),
                       )}',
                       style: const TextStyle(
                         fontSize: 32,
@@ -289,7 +357,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${_buildDecisionThreeMethods(0, 0)}');
               }
-              return const CircularProgressIndicator();
+              return const Text('tidak ada data');
             },
           ),
         ),
