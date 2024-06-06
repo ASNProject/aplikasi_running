@@ -80,7 +80,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
     90.0,
   ];
 
-  final List<int> levels = [
+  final List<double> levels = [
     1,
     5,
     1,
@@ -141,7 +141,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
     classifier = DecisionTreeClassifier(data, 'level');
   }
 
-  int _buildDecisionThreeMethods(int maxHr, int hr) {
+  double _buildDecisionThreeMethods(double maxHr, double hr) {
     if (classifier == null) {
       return 0;
     }
@@ -162,7 +162,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
 
     final predictedLevel = prediction.rows.first.first.toString();
 
-    return int.tryParse(predictedLevel) ?? 0;
+    return double.tryParse(predictedLevel) ?? 0;
   }
 
   @override
@@ -187,18 +187,19 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
               }
 
               final heartRateData = snapshot.data!;
-              int bpmMax = 220 - int.parse(widget.age);
+              double bpmMax = 220 - double.parse(widget.age);
               if (heartRateData.isNotEmpty) {
                 // Calculate average bpm
-                int totalBPM = snapshot.data!
-                    .fold(0, (prev, e) => prev + int.parse(e.bpm));
+                double totalBPM = snapshot.data!
+                    .fold(0, (prev, e) => prev + double.parse(e.bpm));
                 double averageBPM = totalBPM / snapshot.data!.length;
                 // Calculate max bpm
-                int maxBPM = snapshot.data!.fold(
+                double maxBPM = snapshot.data!.fold(
                     0,
                     (prev, e) =>
-                        prev > int.parse(e.bpm) ? prev : int.parse(e.bpm));
-                return Column(
+                        prev > double.parse(e.bpm) ? prev : double.parse(e.bpm));
+                return
+                  Column(
                   children: [
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 40.0),
@@ -255,7 +256,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                                   xValueMapper: (HeartRateData heartRate, _) =>
                                       heartRate.time,
                                   yValueMapper: (HeartRateData heartRate, _) =>
-                                      int.parse(heartRate.bpm),
+                                      double.parse(heartRate.bpm),
                                   color: Colors.amber,
                                 ),
                                 LineSeries<HeartRateData, int>(
@@ -268,7 +269,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                                   xValueMapper: (HeartRateData heartRate, _) =>
                                       heartRate.time,
                                   yValueMapper: (HeartRateData heartRate, _) =>
-                                      int.parse(heartRate.bpm),
+                                      double.parse(heartRate.bpm),
                                   color: Colors
                                       .red, // Ganti warna sesuai kebutuhan
                                 ),
@@ -302,7 +303,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                     Text(
                       'Level ${buildDecisionThreeMethods(
                         bpmMax,
-                        int.parse(snapshot.data!.last.bpm),
+                        double.parse(snapshot.data!.last.bpm),
                       )}',
                       style: const TextStyle(
                         fontSize: 32,
@@ -355,7 +356,10 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                   ],
                 );
               } else if (snapshot.hasError) {
-                return Text('Error: ${_buildDecisionThreeMethods(0, 0)}');
+                return
+                  Text('Error: '
+                      '${_buildDecisionThreeMethods(0, 0)}'
+                      '');
               }
               return const Text('tidak ada data');
             },

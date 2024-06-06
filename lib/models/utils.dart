@@ -1,8 +1,8 @@
-int buildDecisionThreeMethods(
-  int maxHr,
-  int hr,
+double buildDecisionThreeMethods(
+  double maxHr,
+  double hr,
 ) {
-  int decisionTree(double percentage) {
+  double decisionTree(double percentage) {
     if (percentage < 60) {
       return 1; // Level 1
     } else if (percentage < 70) {
@@ -16,7 +16,7 @@ int buildDecisionThreeMethods(
     }
   }
 
-  int calculateLevel(int hr, int max) {
+  double calculateLevel(double hr, double max) {
     double percentage = (hr / max) * 100;
 
     if (percentage < 50) {
@@ -26,6 +26,6 @@ int buildDecisionThreeMethods(
     }
   }
 
-  int level = calculateLevel(hr, maxHr);
+  double level = calculateLevel(hr, maxHr);
   return level;
 }
