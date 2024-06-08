@@ -183,7 +183,21 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
               }
 
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No data available'));
+                return const Padding(
+                  padding: EdgeInsets.only(top: 200.0),
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        Text('Mohon menuggu sedang melakukan sinkronisasi data')
+                      ],
+                    ),
+                  ),
+                );
               }
 
               final heartRateData = snapshot.data!;
@@ -196,10 +210,14 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                 // Calculate max bpm
                 double maxBPM = snapshot.data!.fold(
                     0,
-                    (prev, e) =>
-                        prev > double.parse(e.bpm) ? prev : double.parse(e.bpm));
-                return
-                  Column(
+                    (prev, e) => prev > double.parse(e.bpm)
+                        ? prev
+                        : double.parse(e.bpm));
+                double ceklevel = buildDecisionThreeMethods(
+                  bpmMax,
+                  double.parse(snapshot.data!.last.bpm));
+                int level = ceklevel.toInt();
+                return Column(
                   children: [
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 40.0),
@@ -224,142 +242,147 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
-                      height: 200,
-                      child: Row(
-                        children: [
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: SizedBox(
-                              height: 40,
-                              width: 40,
-                              child: Image.asset('assets/images/hearrate.png'),
-                            ),
-                          ),
-                          Expanded(
-                            child: SfCartesianChart(
-                              primaryXAxis: const NumericAxis(
-                                title: AxisTitle(
-                                  text: 'Time',
-                                  textStyle: TextStyle(fontSize: 8),
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 200,
+                          child: Row(
+                            children: [
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: SizedBox(
+                                  height: 40,
+                                  width: 40,
+                                  child:
+                                      Image.asset('assets/images/hearrate.png'),
                                 ),
                               ),
-                              primaryYAxis: const NumericAxis(
-                                title: AxisTitle(
-                                  text: 'BPM',
-                                  textStyle: TextStyle(fontSize: 8),
+                              Expanded(
+                                child: SfCartesianChart(
+                                  primaryXAxis: const NumericAxis(
+                                    title: AxisTitle(
+                                      text: 'Time',
+                                      textStyle: TextStyle(fontSize: 8),
+                                    ),
+                                  ),
+                                  primaryYAxis: const NumericAxis(
+                                    title: AxisTitle(
+                                      text: 'BPM',
+                                      textStyle: TextStyle(fontSize: 8),
+                                    ),
+                                  ),
+                                  series: <CartesianSeries>[
+                                    LineSeries<HeartRateData, int>(
+                                      dataSource: snapshot.data,
+                                      xValueMapper:
+                                          (HeartRateData heartRate, _) =>
+                                              heartRate.time,
+                                      yValueMapper:
+                                          (HeartRateData heartRate, _) =>
+                                              double.parse(heartRate.bpm),
+                                      color: Colors.amber,
+                                    ),
+                                    LineSeries<HeartRateData, int>(
+                                      dataSource: List.generate(
+                                          snapshot.data!.length,
+                                          (index) => HeartRateData(
+                                              snapshot.data![index].time,
+                                              bpmMax.toString())),
+                                      // Data dengan nilai BPM konstan 100
+                                      xValueMapper:
+                                          (HeartRateData heartRate, _) =>
+                                              heartRate.time,
+                                      yValueMapper:
+                                          (HeartRateData heartRate, _) =>
+                                              double.parse(heartRate.bpm),
+                                      color: Colors
+                                          .red, // Ganti warna sesuai kebutuhan
+                                    ),
+                                  ],
                                 ),
                               ),
-                              series: <CartesianSeries>[
-                                LineSeries<HeartRateData, int>(
-                                  dataSource: snapshot.data,
-                                  xValueMapper: (HeartRateData heartRate, _) =>
-                                      heartRate.time,
-                                  yValueMapper: (HeartRateData heartRate, _) =>
-                                      double.parse(heartRate.bpm),
-                                  color: Colors.amber,
-                                ),
-                                LineSeries<HeartRateData, int>(
-                                  dataSource: List.generate(
-                                      snapshot.data!.length,
-                                      (index) => HeartRateData(
-                                          snapshot.data![index].time,
-                                          bpmMax.toString())),
-                                  // Data dengan nilai BPM konstan 100
-                                  xValueMapper: (HeartRateData heartRate, _) =>
-                                      heartRate.time,
-                                  yValueMapper: (HeartRateData heartRate, _) =>
-                                      double.parse(heartRate.bpm),
-                                  color: Colors
-                                      .red, // Ganti warna sesuai kebutuhan
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    const Text(
-                      'BPM',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      snapshot.data!.last.bpm.toString(),
-                      style: const TextStyle(
-                          fontSize: 60, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    const Text(
-                      'Your level run now',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Level ${buildDecisionThreeMethods(
-                        bpmMax,
-                        double.parse(snapshot.data!.last.bpm),
-                      )}',
-                      style: const TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    SizedBox(
-                      height: 50,
-                      width: 200,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              const MaterialStatePropertyAll<Color>(
-                                  Colors.blue),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
+                            ],
                           ),
                         ),
-                        onPressed: () {
-                          GoRouter.of(context).pushReplacementNamed(
-                              AppRouteConstants.resultScreen,
-                              params: {
-                                'name': widget.name,
-                                'age': widget.age,
-                              },
-                              queryParams: {
-                                'averageBPM': averageBPM.toStringAsFixed(3),
-                                'maxBPM': maxBPM.toString(),
-                                'getTime': _formatTime(_secondsElapsed),
-                              });
-
-                          _stopTimer();
-                        },
-                        child: const Text(
-                          'END',
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        const Text(
+                          'BPM',
                           style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          snapshot.data!.last.bpm.toString(),
+                          style: const TextStyle(
+                              fontSize: 60, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 32,
+                        ),
+                        const Text(
+                          'Your level run now',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'Level $level',
+                          style: const TextStyle(
+                            fontSize: 32,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-                    ),
+                        const SizedBox(
+                          height: 32,
+                        ),
+                        SizedBox(
+                          height: 50,
+                          width: 200,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  const MaterialStatePropertyAll<Color>(
+                                      Colors.blue),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                              ),
+                            ),
+                            onPressed: () {
+                              GoRouter.of(context).pushReplacementNamed(
+                                  AppRouteConstants.resultScreen,
+                                  params: {
+                                    'name': widget.name,
+                                    'age': widget.age,
+                                  },
+                                  queryParams: {
+                                    'averageBPM': averageBPM.toStringAsFixed(3),
+                                    'maxBPM': maxBPM.toString(),
+                                    'getTime': _formatTime(_secondsElapsed),
+                                  });
+
+                              _stopTimer();
+                            },
+                            child: const Text(
+                              'END',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 );
               } else if (snapshot.hasError) {
-                return
-                  Text('Error: '
-                      '${_buildDecisionThreeMethods(0, 0)}'
-                      '');
+                return Text('Error: '
+                    '${_buildDecisionThreeMethods(0, 0)}'
+                    '');
               }
               return const Text('tidak ada data');
             },

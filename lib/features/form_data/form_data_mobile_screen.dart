@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import 'package:aplikasi_running/cores/routers/routes.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -33,6 +34,13 @@ class _FormDataMobileScreenState extends State<FormDataMobileScreen> {
     super.initState();
     name = '';
     age = '';
+  }
+
+  Future<void> _deleteDataFromFirebase() async {
+    try {
+      DatabaseReference ref = FirebaseDatabase.instance.ref('hearRateData');
+      await ref.remove();
+    } catch (e) {}
   }
 
   @override
@@ -164,7 +172,8 @@ class _FormDataMobileScreenState extends State<FormDataMobileScreen> {
                         ),
                       ),
                       onPressed: (name.isNotEmpty && age.isNotEmpty)
-                          ? () {
+                          ? () async {
+                              await _deleteDataFromFirebase();
                               GoRouter.of(context).pushNamed(
                                   AppRouteConstants.dashboardScreen,
                                   params: {
