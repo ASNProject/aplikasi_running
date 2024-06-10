@@ -3,7 +3,7 @@ double buildDecisionThreeMethods(
   double a,
   double b,
 ) {
-  double decisionTree(double p) {
+  double d(double p) {
     if (p < 60) {
       return 1;
     } else if (p < 70) {
@@ -23,7 +23,7 @@ double buildDecisionThreeMethods(
     if (p < 50) {
       return 0;
     } else {
-      return decisionTree(p);
+      return d(p);
     }
   }
 
