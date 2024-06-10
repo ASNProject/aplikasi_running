@@ -26,6 +26,7 @@ class FormDataMobileScreen extends StatefulWidget {
 }
 
 class _FormDataMobileScreenState extends State<FormDataMobileScreen> {
+  // Membuat initialisasi
   late String name;
   late String age;
 
@@ -36,6 +37,7 @@ class _FormDataMobileScreenState extends State<FormDataMobileScreen> {
     age = '';
   }
 
+  // Program untuk menghapus data dari firebase
   Future<void> _deleteDataFromFirebase() async {
     try {
       DatabaseReference ref = FirebaseDatabase.instance.ref('hearRateData');
@@ -45,9 +47,11 @@ class _FormDataMobileScreenState extends State<FormDataMobileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Membuat body form aplikasi
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
+        // Menampilkan background
         child: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -59,6 +63,7 @@ class _FormDataMobileScreenState extends State<FormDataMobileScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Stack(
               children: [
+                // Menampilkan input form
                 Column(
                   children: [
                     const Padding(
@@ -154,6 +159,7 @@ class _FormDataMobileScreenState extends State<FormDataMobileScreen> {
                     )
                   ],
                 ),
+                // Menampilkan Button Save & Go
                 Positioned(
                   bottom: 60.0,
                   left: 40,
@@ -171,10 +177,14 @@ class _FormDataMobileScreenState extends State<FormDataMobileScreen> {
                           ),
                         ),
                       ),
+                      // Ketika button Save and Go ditekan
                       onPressed: (name.isNotEmpty && age.isNotEmpty)
                           ? () async {
+                        // Pertama memanggil penghapusan firebase
                               await _deleteDataFromFirebase();
+                              // Mengarahkan tampilan ke dashboard screen
                               GoRouter.of(context).pushNamed(
+                                  // Mengirim konstanta yang diperlukan di dashboard screen seperti name dan age
                                   AppRouteConstants.dashboardScreen,
                                   params: {
                                     'name': name,

@@ -41,12 +41,14 @@ class DashboardMobileScreen extends StatefulWidget {
 }
 
 class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
+  // Membuat inisialisasi
   late Stream<List<HeartRateData>> heartRateStream;
   late Timer _timer;
   int _secondsElapsed = 0;
   bool _isTimerRunning = true;
   String geTime = '';
 
+  // Membuat data percentage bpm
   final List<double> percentages = [
     59.0,
     57.0,
@@ -80,6 +82,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
     90.0,
   ];
 
+  // Membuat data levels
   final List<double> levels = [
     1,
     5,
@@ -124,6 +127,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
       const Duration(seconds: 1),
       _updateTimer,
     );
+    // Menjalankan training model
     _trainModel();
   }
 
@@ -133,6 +137,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
     super.dispose();
   }
 
+  // Membuat code untuk melalukan training model
   void _trainModel() {
     final data = DataFrame.fromSeries([
       Series('percentages', percentages),
@@ -141,6 +146,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
     classifier = DecisionTreeClassifier(data, 'level');
   }
 
+  // Program decision tree untuk menentukan level
   double _buildDecisionThreeMethods(double maxHr, double hr) {
     if (classifier == null) {
       return 0;
@@ -167,10 +173,12 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Membuat body aplikasi
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
+          // Memanggil data dari firebase
           child: StreamBuilder<List<HeartRateData>>(
             stream: heartRateStream,
             builder: (context, snapshot) {
@@ -200,6 +208,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                 );
               }
 
+              // Mengolah data firebase
               final heartRateData = snapshot.data!;
               double bpmMax = 220 - double.parse(widget.age);
               if (heartRateData.isNotEmpty) {
@@ -213,10 +222,12 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                     (prev, e) => prev > double.parse(e.bpm)
                         ? prev
                         : double.parse(e.bpm));
+                // Cek level menggunakan decision tree
                 double ceklevel = buildDecisionThreeMethods(
                   bpmMax,
                   double.parse(snapshot.data!.last.bpm));
                 int level = ceklevel.toInt();
+                // Membuat tampilan screen
                 return Column(
                   children: [
                     const Padding(
@@ -229,6 +240,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                         ),
                       ),
                     ),
+                    // Menjalankan Timer
                     Text(
                       'Time: ${_formatTime(_secondsElapsed)}',
                       style: const TextStyle(
@@ -257,6 +269,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                                       Image.asset('assets/images/hearrate.png'),
                                 ),
                               ),
+                              // Menampilkan grafik data
                               Expanded(
                                 child: SfCartesianChart(
                                   primaryXAxis: const NumericAxis(
@@ -272,6 +285,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                                     ),
                                   ),
                                   series: <CartesianSeries>[
+                                    // Menampilkan data realtime
                                     LineSeries<HeartRateData, int>(
                                       dataSource: snapshot.data,
                                       xValueMapper:
@@ -282,6 +296,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                                               double.parse(heartRate.bpm),
                                       color: Colors.amber,
                                     ),
+                                    // Menampilkan data max bpm
                                     LineSeries<HeartRateData, int>(
                                       dataSource: List.generate(
                                           snapshot.data!.length,
@@ -312,6 +327,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
+                        // Menampilkan data bpm terakhir yang dikirim
                         Text(
                           snapshot.data!.last.bpm.toString(),
                           style: const TextStyle(
@@ -325,6 +341,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
+                        // Menampilkan level
                         Text(
                           'Level $level',
                           style: const TextStyle(
@@ -335,6 +352,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                         const SizedBox(
                           height: 32,
                         ),
+                        // Tombol pindah halaman ke result screen
                         SizedBox(
                           height: 50,
                           width: 200,
@@ -351,7 +369,9 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                               ),
                             ),
                             onPressed: () {
+                              // Membuka screen result screen
                               GoRouter.of(context).pushReplacementNamed(
+                                // Mengirim parameter ke result screen seperti nama, age, average bpm, max bpm, getTime,
                                   AppRouteConstants.resultScreen,
                                   params: {
                                     'name': widget.name,
@@ -391,7 +411,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
       ),
     );
   }
-
+  // Program update Timer
   void _updateTimer(Timer timer) {
     if (_isTimerRunning) {
       setState(() {
@@ -399,14 +419,14 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
       });
     }
   }
-
+  // Program Stop Timer
   void _stopTimer() {
     setState(() {
       _isTimerRunning = false;
       geTime = _formatTime(_secondsElapsed);
     });
   }
-
+  // Format Timer
   String _formatTime(int seconds) {
     int hours = seconds ~/ 3600;
     int minutes = (seconds % 3600) ~/ 60;

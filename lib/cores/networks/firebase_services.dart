@@ -6,6 +6,7 @@ class FirebaseService {
   final DatabaseReference _heartRateRef =
   FirebaseDatabase.instance.ref().child('hearRateData');
 
+  // Get data hearrate dari firebase
   Stream<List<HeartRateData>> getHeartRateData() {
     return _heartRateRef.onValue.map((event) {
       final data = event.snapshot.value as List<dynamic>?;

@@ -42,6 +42,7 @@ class _ResultMobileScreenState extends State<ResultMobileScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Container(
+            // Menampilkan background
             decoration: const BoxDecoration(
               image: DecorationImage(
                   image: AssetImage("assets/images/result.png"),
@@ -65,6 +66,7 @@ class _ResultMobileScreenState extends State<ResultMobileScreen> {
                 ),
                 Row(
                   children: [
+                    // Menampilkan nama
                     const SizedBox(
                       width: 100,
                       child: Text(
@@ -87,6 +89,7 @@ class _ResultMobileScreenState extends State<ResultMobileScreen> {
                 ),
                 Row(
                   children: [
+                    // Menampilkan Usia
                     const SizedBox(
                       width: 100,
                       child: Text(
@@ -111,6 +114,7 @@ class _ResultMobileScreenState extends State<ResultMobileScreen> {
                   'Waktu',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
+                // Menampilkan Timer
                 Text(
                   widget.getTime,
                   style: const TextStyle(
@@ -123,6 +127,7 @@ class _ResultMobileScreenState extends State<ResultMobileScreen> {
                   'Detak max',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
+                // Menampilkan max BPM
                 Text(
                   '${widget.maxBPM} BPM',
                   style: const TextStyle(
@@ -135,6 +140,7 @@ class _ResultMobileScreenState extends State<ResultMobileScreen> {
                   'Detak rata-rata',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
+                // Menampilkan rata-rata bpm
                 Text(
                   '${widget.averageBPM} BPM',
                   style: const TextStyle(

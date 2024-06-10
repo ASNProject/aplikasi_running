@@ -1,31 +1,32 @@
+// Old Version Code Don't use this
 double buildDecisionThreeMethods(
-  double maxHr,
-  double hr,
+  double a,
+  double b,
 ) {
-  double decisionTree(double percentage) {
-    if (percentage < 60) {
-      return 1; // Level 1
-    } else if (percentage < 70) {
-      return 2; // Level 2
-    } else if (percentage < 80) {
-      return 3; // Level 3
-    } else if (percentage < 90) {
-      return 4; // Level 4
+  double decisionTree(double p) {
+    if (p < 60) {
+      return 1;
+    } else if (p < 70) {
+      return 2;
+    } else if (p < 80) {
+      return 3;
+    } else if (p < 90) {
+      return 4;
     } else {
-      return 5; // Level 5
+      return 5;
     }
   }
 
-  double calculateLevel(double hr, double max) {
-    double percentage = (hr / max) * 100;
+  double c(double a, double b) {
+    double p = (a / b) * 100;
 
-    if (percentage < 50) {
+    if (p < 50) {
       return 0;
     } else {
-      return decisionTree(percentage);
+      return decisionTree(p);
     }
   }
 
-  double level = calculateLevel(hr, maxHr);
-  return level;
+  double l = c(a, b);
+  return l;
 }
