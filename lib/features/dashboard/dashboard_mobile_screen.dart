@@ -17,6 +17,7 @@ import 'dart:async';
 import 'package:aplikasi_running/cores/networks/firebase_services.dart';
 import 'package:aplikasi_running/cores/routers/app_route_constants.dart';
 import 'package:aplikasi_running/models/heart_rate_data.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ml_algo/ml_algo.dart';
@@ -224,9 +225,28 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                         : double.parse(e.bpm));
                 // Cek level menggunakan decision tree
                 double ceklevel = buildDecisionThreeMethods(
-                  bpmMax,
-                  double.parse(snapshot.data!.last.bpm));
+                    bpmMax, double.parse(snapshot.data!.last.bpm));
                 int level = ceklevel.toInt();
+
+                if (double.parse(snapshot.data!.last.bpm) >= bpmMax) {
+                  Future.delayed(Duration.zero, () {
+                    final snackBar = SnackBar(
+                      elevation: 0,
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: Colors.transparent,
+                      content: AwesomeSnackbarContent(
+                        title: 'Peringatan!',
+                        message: 'HeartRate anda melebihi batas bpmMax, Silahkan istirahat terlebih dahulu!.',
+                        contentType: ContentType.failure,
+                      ),
+                    );
+
+                    ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(snackBar);
+                  });
+              }
+
                 // Membuat tampilan screen
                 return Column(
                   children: [
@@ -371,7 +391,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                             onPressed: () {
                               // Membuka screen result screen
                               GoRouter.of(context).pushReplacementNamed(
-                                // Mengirim parameter ke result screen seperti nama, age, average bpm, max bpm, getTime,
+                                  // Mengirim parameter ke result screen seperti nama, age, average bpm, max bpm, getTime,
                                   AppRouteConstants.resultScreen,
                                   params: {
                                     'name': widget.name,
@@ -411,6 +431,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
       ),
     );
   }
+
   // Program update Timer
   void _updateTimer(Timer timer) {
     if (_isTimerRunning) {
@@ -419,6 +440,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
       });
     }
   }
+
   // Program Stop Timer
   void _stopTimer() {
     setState(() {
@@ -426,6 +448,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
       geTime = _formatTime(_secondsElapsed);
     });
   }
+
   // Format Timer
   String _formatTime(int seconds) {
     int hours = seconds ~/ 3600;
