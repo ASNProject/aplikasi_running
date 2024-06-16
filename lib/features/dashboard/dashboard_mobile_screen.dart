@@ -236,7 +236,8 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                       backgroundColor: Colors.transparent,
                       content: AwesomeSnackbarContent(
                         title: 'Peringatan!',
-                        message: 'HeartRate anda melebihi batas bpmMax, Silahkan istirahat terlebih dahulu!.',
+                        message:
+                            'HeartRate anda melebihi batas bpmMax, Silahkan istirahat terlebih dahulu!.',
                         contentType: ContentType.failure,
                       ),
                     );
@@ -245,7 +246,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                       ..hideCurrentSnackBar()
                       ..showSnackBar(snackBar);
                   });
-              }
+                }
 
                 // Membuat tampilan screen
                 return Column(
@@ -379,9 +380,9 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                           child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor:
-                                  const MaterialStatePropertyAll<Color>(
+                                  const WidgetStatePropertyAll<Color>(
                                       Colors.blue),
-                              shape: MaterialStateProperty.all<
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15.0),
