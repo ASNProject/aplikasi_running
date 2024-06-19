@@ -224,7 +224,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                         ? prev
                         : double.parse(e.bpm));
                 // Cek level menggunakan decision tree
-                double ceklevel = buildDecisionThreeMethods(
+                double ceklevel = _buildDecisionThreeMethod(
                     bpmMax, double.parse(snapshot.data!.last.bpm));
                 int level = ceklevel.toInt();
 

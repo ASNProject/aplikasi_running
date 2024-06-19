@@ -1,5 +1,5 @@
 // Old Version Code Don't use this
-double buildDecisionThreeMethods(
+double _buildDecisionThreeMethod(
     double maxHr,
     double hr,
     ) {
