@@ -35,8 +35,13 @@ class ResultMobileScreen extends StatefulWidget {
 }
 
 class _ResultMobileScreenState extends State<ResultMobileScreen> {
+  double? averageBmp;
+  double? maxBpm;
+
   @override
   Widget build(BuildContext context) {
+    averageBmp = double.tryParse(widget.averageBPM);
+    maxBpm = double.tryParse(widget.maxBPM);
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -129,7 +134,7 @@ class _ResultMobileScreenState extends State<ResultMobileScreen> {
                 ),
                 // Menampilkan max BPM
                 Text(
-                  '${widget.maxBPM} BPM',
+                  '${maxBpm?.toInt()} BPM',
                   style: const TextStyle(
                       fontSize: 28, fontWeight: FontWeight.bold),
                 ),
@@ -142,7 +147,7 @@ class _ResultMobileScreenState extends State<ResultMobileScreen> {
                 ),
                 // Menampilkan rata-rata bpm
                 Text(
-                  '${widget.averageBPM} BPM',
+                  '${averageBmp?.toInt()} BPM',
                   style: const TextStyle(
                       fontSize: 28, fontWeight: FontWeight.bold),
                 ),
