@@ -48,6 +48,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
   int _secondsElapsed = 0;
   bool _isTimerRunning = true;
   String geTime = '';
+  double? lastBpm;
 
   // Membuat data percentage bpm
   final List<double> percentages = [
@@ -217,6 +218,8 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                 double totalBPM = snapshot.data!
                     .fold(0, (prev, e) => prev + double.parse(e.bpm));
                 double averageBPM = totalBPM / snapshot.data!.length;
+                // Last BMP
+                lastBpm = double.tryParse(snapshot.data!.last.bpm);
                 // Calculate max bpm
                 double maxBPM = snapshot.data!.fold(
                     0,
@@ -224,7 +227,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                         ? prev
                         : double.parse(e.bpm));
                 // Cek level menggunakan decision tree
-                double ceklevel = _buildDecisionThreeMethod(
+                double ceklevel = _buildDecisionThreeMethods(
                     bpmMax, double.parse(snapshot.data!.last.bpm));
                 int level = ceklevel.toInt();
 
@@ -350,7 +353,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                         ),
                         // Menampilkan data bpm terakhir yang dikirim
                         Text(
-                          snapshot.data!.last.bpm.toString(),
+                          '${lastBpm?.toInt()}',
                           style: const TextStyle(
                               fontSize: 60, fontWeight: FontWeight.bold),
                         ),
@@ -380,9 +383,9 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                           child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor:
-                                  const WidgetStatePropertyAll<Color>(
+                                  const MaterialStatePropertyAll<Color>(
                                       Colors.blue),
-                              shape: WidgetStateProperty.all<
+                              shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15.0),
