@@ -134,7 +134,7 @@ class _ResultMobileScreenState extends State<ResultMobileScreen> {
                 ),
                 // Menampilkan max BPM
                 Text(
-                  '${maxBpm?.toInt()} BPM',
+                  '${maxBpm?.round()} BPM',
                   style: const TextStyle(
                       fontSize: 28, fontWeight: FontWeight.bold),
                 ),
@@ -147,7 +147,7 @@ class _ResultMobileScreenState extends State<ResultMobileScreen> {
                 ),
                 // Menampilkan rata-rata bpm
                 Text(
-                  '${averageBmp?.toInt()} BPM',
+                  '$averageBmp BPM',
                   style: const TextStyle(
                       fontSize: 28, fontWeight: FontWeight.bold),
                 ),

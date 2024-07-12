@@ -353,7 +353,7 @@ class _DashboardMobileScreenState extends State<DashboardMobileScreen> {
                         ),
                         // Menampilkan data bpm terakhir yang dikirim
                         Text(
-                          '${lastBpm?.toInt()}',
+                          '${lastBpm?.round()}',
                           style: const TextStyle(
                               fontSize: 60, fontWeight: FontWeight.bold),
                         ),
