@@ -43,9 +43,6 @@ dependencies:
   ml_algo: ^16.17.10
   awesome_snackbar_content: ^0.1.1
 
-  asnproject_ui:
-    path: ../asnproject_ui
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
